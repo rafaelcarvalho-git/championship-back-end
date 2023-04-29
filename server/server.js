@@ -23,7 +23,7 @@ app.post("/teams/new", (req, res) => {
         city,
         coach,
         website,
-        players,
+        players: [],
       };
       teams.push(newTeam); // Substituir pelo mongoDB
       res.status(201).json(newTeam);
@@ -89,6 +89,48 @@ app.delete("/teams/delete/:id", (req, res) => {
   }
   teams.splice(teamIndex, 1); // Remove o time do array (no caso prático aqui vai a lógica para remover do banco)
   res.status(204).json(); 
+});
+
+
+
+// Adciona um novo jogador no time com o id indicado
+app.post("/teams/:id/players/new", (req, res) => {
+  const id = parseInt(req.params.id);
+  const { name, photo, height, weight, age, position, number } = req.body;
+  const teamIndex = teams.findIndex((team) => team.id === id);
+  if (teamIndex < 0) {
+    return res.status(404).json({ error: "Time não encontrado" });
+  }
+  if (teams[teamIndex].players?.length >= 22) {
+    return res.status(401).json({ error: "Não é possível adicionar mais jogadores" });
+  }
+  const existingPlayer = teams[teamIndex].players.find((player) => player.name === name) || teams[teamIndex].players.find((player) => player.number === number);
+  if (existingPlayer) {
+    return res.status(409).json({ error: "O jogador já foi cadastrado" });
+  } else {
+  const newPlayer = { 
+    name, 
+    photo, 
+    height, 
+    weight, 
+    age, 
+    position, 
+    number
+   };
+  teams[teamIndex].players.push(newPlayer);
+  res.status(200).json(teams[teamIndex]);
+  }
+});
+
+
+// Listar jogadores de um time pelo ID
+app.get("/teams/:id/players", (req, res) => {
+  const id = parseInt(req.params.id);
+  const teamIndex = teams.findIndex((team) => team.id === id);
+  if (teamIndex < 0) {
+    return res.status(404).json({ error: "Time não encontrado" });
+  }
+  res.status(200).json(teams[teamIndex].players);
 });
 
 
