@@ -24,4 +24,3 @@ mongoose.connect(`mongodb+srv://${dbUser}:${dbPass}@cluster0.gzb5jda.mongodb.net
     console.log(err)
   }
 )
-
