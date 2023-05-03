@@ -15,7 +15,6 @@ routes.post("/player", async (req, res) => {
   }
 
   // checking if there is more than 22 players in the team
-
   try {
 
     const players = await playerModel.find({
@@ -45,13 +44,31 @@ routes.post("/player", async (req, res) => {
 
     await playerModel.create(player)
 
-    return res.status(200).json({
+    return res.status(201).json({
       message: "Jogador criado com sucesso"
     })
 
   } catch (error) {
     return res.status(500).json({
       message: "Erro ao inserir jogador"
+    })
+  }
+
+})
+
+routes.get("/players", async (req, res) => {
+
+  try {
+    
+    const players = await playerModel.find()
+
+    return res.status(200).json({
+      players: players
+    })
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Erro ao listar os jogadores"
     })
   }
 

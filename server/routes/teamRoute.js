@@ -1,166 +1,154 @@
 const express = require("express")
 
 const routes = express.Router()
+const teamModel = require("../models/teamModel")
+const playerModel = require("../models/playerModel")
 
-const teams = [] // Array para armazenar os times cadastrados - substituir pelo mongoDB
+routes.post("/teams/new", async (req, res) => {
+  // retrieving data from the body
+  const { name, shieldImage, city, coachName, website } = req.body
 
-// Cadastrar novo time
-// Verifica se o time já existe, não permite cadstrar mais do que 8 times
-routes.post("/teams/new", (req, res) => {
-
-  const { name, shieldImage, city, coach, website, players } = req.body
-  const existingTeam = teams.find(team => team.name === name)
-  
-  if (existingTeam) {
-  
-    res.status(409).json({ error: "O time já foi cadastrado" })
-    return
-  
-  } else {
-    
-    if (teams.length < 8) { 
-      const newTeam = {
-        id: teams.length + 1,
-        name,
-        shieldImage,
-        city,
-        coach,
-        website,
-        players: [],
-      }
-
-      teams.push(newTeam) // Substituir pelo mongoDB
-      res.status(201).json(newTeam)
-    }
-    else {
-      res.status(401).json({ error: "Não é possível cadastrar mais do que 8 times" })
-    }
-
+  // simple verification for recieved data
+  if (!name || !shieldImage || !city || !coachName || !website) {
+    return res.status(400).json({
+      message: "Dado necessario nao esta presente",
+    })
   }
 
+  const teamExist = await teamModel.findOne({
+    name: name,
+  })
+
+  if (teamExist) {
+    return res.status(400).json({
+      message: "TIime já existe",
+    })
+  }
+
+  const teamCount = await teamModel.countDocuments()
+  if (teamCount >= 8) {
+    return res.status(400).json({
+      message: "Nao é possivel cadastrar mais times",
+    })
+  }
+
+  const team = {
+    name,
+    shieldImage,
+    city,
+    coachName,
+    website,
+  }
+
+  try {
+    await teamModel.create(team)
+
+    return res.status(201).json({
+      message: "Time criado com sucesso!",
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: "Erro ocorreu durante a criacao do time",
+    })
+  }
 })
 
+// Rota para listar os times
+routes.get("/teams/list", async (req, res) => {
+  try {
+    const teams = await teamModel.find()
+    res.status(200).json({
+      teams: teams,
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: "Erro ao listar os times existentes",
+    })
+  }
+})
 
-// Sortear times
-// Verifica se os 8 times estão cadastrados e sorteia duas chaves com 4 partidas
-routes.get("/teams/sort", (req, res) => {
-  
-  if (teams.length < 8) {
+// Rota para deletar os times
+routes.delete("/teams/delete/:id", async (req, res) => {
+  const id = req.params.id
+  try {
+    // deleta todos os jogadores do time com o idTeam igual ao id do time
+    await playerModel.deleteMany({ idTeam: id })
 
-    res.status(401).json({ error: "Não é possível sortear jogos com menos de 8 times cadastrados" })
+    const result = await teamModel.deleteOne({ _id: id })
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        message: "Time não encontrado",
+      })
+    }
 
-  } else {
-    
+    return res.status(200).json({
+      message: "Time removido com sucesso",
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: "Erro ao remover o time",
+      error: error,
+    })
+  }
+})
+
+// Rota para sortear os times
+routes.post("/teams/sort", async (req, res) => {
+  try {
+    const teams = await teamModel.find({})
+    if (teams.length !== 8) {
+      return res.status(400).json({
+        message:
+          "Não é possível sortear os times, é necessário ter 8 times cadastrados.",
+      })
+    }
     const shuffledTeams = teams.sort(() => Math.random() - 0.5)
     const chaveA = shuffledTeams.slice(0, 4)
     const chaveB = shuffledTeams.slice(4, 8)
     const games = []
-
     for (let i = 0; i < 4; i++) {
-
       const game = {
         PARTIDA: i + 1,
         timeA: chaveA[i],
-        timeB: chaveB[i]
+        timeB: chaveB[i],
       }
-
       games.push(game)
     }
-
     res.status(200).json(games)
+  } catch (error) {
+    return res.status(500).json({
+      message: "Erro ao sortear os times.",
+    })
   }
-
 })
 
-// Lista todos os times cadastrados
-routes.get("/teams/list", (req, res) => {
-  res.status(200).json(teams)
-})
+// Rota para editar os times
+routes.patch("/teams/edit/:id", async (req, res) => {
+  try {
+    const { name, shieldImage, city, coachName, website } = req.body
+    const { id } = req.params
+    const team = await teamModel.findByIdAndUpdate(
+      id,
+      { name, shieldImage, city, coachName, website },
+      { new: true }
+    )
 
-// Editar time
-routes.patch("/teams/edit/:id", (req, res) => {
-
-  const id = parseInt(req.params.id)
-  const { name, shieldImage, city, coach, website } = req.body
-  const teamIndex = teams.findIndex((team) => team.id === id)
-  
-  if (teamIndex < 0) {  
-    return res.status(404).json({ error: "Time não encontrado" })
-  }
-
-  teams[teamIndex].name = name
-  teams[teamIndex].shieldImage = shieldImage
-  teams[teamIndex].city = city
-  teams[teamIndex].coach = coach
-  teams[teamIndex].website = website
-
-  res.status(200).json(teams[teamIndex])
-
-})
-
-
-// Deletar time
-routes.delete("/teams/delete/:id", (req, res) => {
-
-  const id = parseInt(req.params.id)
-  const teamIndex = teams.findIndex((team) => team.id === id)
-  
-  if (teamIndex < 0) {    
-    return res.status(404).json({ error: "Time não encontrado" })
-  }
-
-  teams.splice(teamIndex, 1) // Remove o time do array (no caso prático aqui vai a lógica para remover do banco)
-  res.status(204).json() 
-
-})
-
-// Adciona um novo jogador no time com o id indicado
-routes.post("/teams/:id/players/new", (req, res) => {
-  const id = parseInt(req.params.id)
-  const { name, photo, height, weight, age, position, number } = req.body
-  const teamIndex = teams.findIndex((team) => team.id === id)
-  
-  if (teamIndex < 0) {
-    return res.status(404).json({ error: "Time não encontrado" })
-  }
-
-  
-  if (teams[teamIndex].players?.length >= 22) {
-    return res.status(401).json({ error: "Não é possível adicionar mais jogadores" })
-  }
-
-  const existingPlayer = teams[teamIndex].players.find((player) => player.name === name) || teams[teamIndex].players.find((player) => player.number === number)
-  
-  if (existingPlayer) {
-    return res.status(409).json({ error: "O jogador já foi cadastrado" })
-  } else {
-    const newPlayer = { 
-      name, 
-      photo, 
-      height, 
-      weight, 
-      age, 
-      position, 
-      number
+    if (!team) {
+      return res.status(404).json({
+        message: "Time não encontrado",
+      })
     }
 
-    teams[teamIndex].players.push(newPlayer)
-    res.status(200).json(teams[teamIndex])
+    return res.status(200).json({
+      message: "Time atualizado com sucesso",
+      team: team,
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      message: "Erro ao atualizar o time",
+    })
   }
-
-})
-
-
-// Listar jogadores de um time pelo ID
-routes.get("/teams/:id/players", (req, res) => {
-  const id = parseInt(req.params.id)
-  const teamIndex = teams.findIndex((team) => team.id === id)
-  
-  if (teamIndex < 0) {
-    return res.status(404).json({ error: "Time não encontrado" })
-  }
-
-  res.status(200).json(teams[teamIndex].players)
 })
 
 module.exports = routes
