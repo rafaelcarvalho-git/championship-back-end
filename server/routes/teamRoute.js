@@ -53,13 +53,25 @@ routes.post("/teams/new", async (req, res) => {
   }
 })
 
-// Rota para listar os times
-routes.get("/teams/list", async (req, res) => {
+// Rota para listar um time caso passe o ID, caso contrario lista todos os times
+routes.get("/teams/list/:id?", async (req, res) => {
   try {
-    const teams = await teamModel.find()
-    res.status(200).json({
-      teams: teams,
-    })
+    if (req.params.id) {
+      const team = await teamModel.findById(req.params.id)
+      if (!team) {
+        return res.status(404).json({
+          message: "Time não encontrado",
+        })
+      }
+      return res.status(200).json({
+        team: team,
+      })
+    } else {
+      const teams = await teamModel.find()
+      return res.status(200).json({
+        teams: teams,
+      })
+    }
   } catch (error) {
     return res.status(500).json({
       message: "Erro ao listar os times existentes",
