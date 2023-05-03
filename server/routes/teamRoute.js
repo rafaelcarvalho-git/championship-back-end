@@ -3,9 +3,10 @@ const express = require("express")
 const routes = express.Router()
 const teamModel = require("../models/teamModel")
 const playerModel = require("../models/playerModel")
+const { checkToken } = require("../middleware/checkToken")
 
 // Rota para criar um novo time
-routes.post("/teams/new", async (req, res) => {
+routes.post("/teams/new", checkToken, async (req, res) => {
   // retrieving data from the body
   const { name, shieldImage, city, coachName, website } = req.body
 
@@ -55,7 +56,7 @@ routes.post("/teams/new", async (req, res) => {
 })
 
 // Rota para listar um time caso passe o ID, caso contrario lista todos os times
-routes.get("/teams/list/:id?", async (req, res) => {
+routes.get("/teams/list/:id?", checkToken, checkToken, async (req, res) => {
   try {
     if (req.params.id) {
       const team = await teamModel.findById(req.params.id)
@@ -81,7 +82,7 @@ routes.get("/teams/list/:id?", async (req, res) => {
 })
 
 // Rota para deletar os times
-routes.delete("/teams/delete/:id", async (req, res) => {
+routes.delete("/teams/delete/:id", checkToken, async (req, res) => {
   const id = req.params.id
   try {
     // deleta todos os jogadores do time com o idTeam igual ao id do time
@@ -106,7 +107,7 @@ routes.delete("/teams/delete/:id", async (req, res) => {
 })
 
 // Rota para sortear os times
-routes.get("/teams/sort", async (req, res) => {
+routes.get("/teams/sort", checkToken, async (req, res) => {
   try {
     const teams = await teamModel.find({})
     if (teams.length !== 8) {
@@ -136,7 +137,7 @@ routes.get("/teams/sort", async (req, res) => {
 })
 
 // Rota para editar os times
-routes.patch("/teams/edit/:id", async (req, res) => {
+routes.patch("/teams/edit/:id", checkToken, async (req, res) => {
   try {
     const { name, shieldImage, city, coachName, website } = req.body
     const { id } = req.params
