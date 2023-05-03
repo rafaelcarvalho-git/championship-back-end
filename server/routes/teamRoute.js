@@ -4,6 +4,7 @@ const routes = express.Router()
 const teamModel = require("../models/teamModel")
 const playerModel = require("../models/playerModel")
 
+// Rota para criar um novo time
 routes.post("/teams/new", async (req, res) => {
   // retrieving data from the body
   const { name, shieldImage, city, coachName, website } = req.body
