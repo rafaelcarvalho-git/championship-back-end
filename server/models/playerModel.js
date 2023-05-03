@@ -8,7 +8,7 @@ const Player = mongoose.model("Player", {
   age: Number,
   position: String,
   number: Number,
-  idTeam: Number
+  idTeam: String
 })
 
 module.exports = Player
