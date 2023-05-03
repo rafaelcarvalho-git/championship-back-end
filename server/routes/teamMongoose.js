@@ -3,7 +3,6 @@ const express = require("express")
 const routes = express.Router()
 const teamModel = require("../models/teamModel")
 
-
 routes.post("/teams", async (req, res) => {
 
   // retrieving data from the 
@@ -53,5 +52,23 @@ routes.post("/teams", async (req, res) => {
   }
 
 })
+
+routes.get("/teams", async (req, res) => {
+
+  try {
+    
+    const teams = await teamModel.find()
+    res.status(200).json({
+      teams: teams
+    })
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Erro ao listar os times existentes"
+    })
+  }
+
+})
+
 
 module.exports = routes
