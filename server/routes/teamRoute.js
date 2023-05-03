@@ -93,7 +93,7 @@ routes.delete("/teams/delete/:id", async (req, res) => {
 })
 
 // Rota para sortear os times
-routes.post("/teams/sort", async (req, res) => {
+routes.get("/teams/sort", async (req, res) => {
   try {
     const teams = await teamModel.find({})
     if (teams.length !== 8) {
