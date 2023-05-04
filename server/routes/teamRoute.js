@@ -165,4 +165,50 @@ routes.patch("/teams/edit/:id", checkToken, async (req, res) => {
   }
 })
 
+
+routes.get("/teams/one/:id", async (req, res) => {
+
+  const id = req.params.id
+  let team = ""
+
+  // searching for the team
+  try {
+
+    team = await teamModel.findOne({
+      _id: id
+    })
+
+  } catch(error) {
+    if (!team) {
+      return res.status(400).json({
+        message: "Time nao encontrado"
+      })
+    
+    }
+  }
+  
+  try {
+
+    const players = await playerModel.find({
+      idTeam: id
+    })
+    
+    return res.status(200).json({
+      id: team._id,
+      name: team.name,
+      shieldImage: team.shieldImage,
+      city: team.city,
+      coachName: team.coachName,
+      website: team.website,
+      players: players
+    })
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Erro ao buscar os jogadores"
+    })
+  }
+
+})
+
 module.exports = routes
