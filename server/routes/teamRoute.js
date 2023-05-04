@@ -56,7 +56,7 @@ routes.post("/teams/new", checkToken, async (req, res) => {
 })
 
 // Rota para listar um time caso passe o ID, caso contrario lista todos os times
-routes.get("/teams/list/:id?", checkToken, checkToken, async (req, res) => {
+routes.get("/teams/list/:id?", checkToken, async (req, res) => {
   try {
     if (req.params.id) {
       const team = await teamModel.findById(req.params.id)
