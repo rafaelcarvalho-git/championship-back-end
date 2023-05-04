@@ -1,10 +1,11 @@
 const express = require("express")
 const playerModel = require("../models/playerModel")
+const { checkToken } = require("../middleware/checkToken")
 
 const routes = express.Router()
 
 // Rota para adicionar jogador em um time
-routes.post("/player/new", async (req, res) => {
+routes.post("/player/new", checkToken, async (req, res) => {
 
   // retrieving data from the body and checking if they exist
   const {name, picture, height, weight, age, position, number, idTeam} = req.body
@@ -57,7 +58,9 @@ routes.post("/player/new", async (req, res) => {
 
 })
 
-routes.get("/players", async (req, res) => {
+
+// Rota para listar jogadores
+routes.get("/players", checkToken, async (req, res) => {
 
   try {
     
@@ -77,7 +80,7 @@ routes.get("/players", async (req, res) => {
 
 
 // Editar jogador pelo ID
-routes.patch("/player/edit/:id", async (req, res) => {
+routes.patch("/player/edit/:id", checkToken, async (req, res) => {
   try {
     const playerId = req.params.id
     const player = await playerModel.findOne({ _id: playerId })
@@ -112,7 +115,7 @@ routes.patch("/player/edit/:id", async (req, res) => {
 
 
 //Deletar jogador pelo ID
-routes.delete("/player/delete/:id", async (req, res) => {
+routes.delete("/player/delete/:id", checkToken, async (req, res) => {
   try {
     const playerId = req.params.id
     const player = await playerModel.findOne({ _id: playerId })
