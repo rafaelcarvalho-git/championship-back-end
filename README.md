@@ -62,7 +62,7 @@ npm start
 - Respostas:
     - 200: lista de times ou time específico
     - 400: erro ao listar times existentes
-    - 404: time não encontrado
+    - 400: time não encontrado
 
 ### DELETE /teams/delete/:id
 - Deleta um time específico pelo ID
