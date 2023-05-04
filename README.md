@@ -23,47 +23,79 @@ npm start
 
 ## Rotas Possíveis
 
-### /auth/register
+### POST /auth/register
+- Cria um novo usuário
+- Body da requisição deve conter:
+    - name: string
+    - email: string
+    - password: string
+- Respostas:
+    - 201: usuario criado com sucesso
+    - 400: usario já existe
 
-- Cadastro de usuario
-- A requisicao deve conter os seguintes campos;
-- A falta de qualquer um desses campos resultará em um erro;
+### POST /auth/login
+- Realiza o login
+- Body da requisição deve conter:
+    - email: string
+    - password: string
+- Respostas:
+    - 201: autenticacao realizada com sucesso
+    - 400: erro durante autenticacao   
 
-```json
-// request
-{
-  "name": "Teste",
-  "email": "teste@gmail.com",
-  "password": "1234"
-}
+### POST /teams/new
+- Cria um novo time
+- Requer um token de autenticação válido para acessar a rota
+- Body da requisição deve conter:
+    - name: string
+    - shieldImage: string
+    - city: string
+    - coachName: string
+    - website: string
+- Respostas:
+    - 201: time criado com sucesso
+    - 400: dado necessário não presente, time já existente ou não é possível cadastrar mais times
+    - 500: erro ocorreu durante a criação do time
 
-// response
-{
-  "message": "usuario cadastrado com sucesso"
-}
-```
+### GET /teams/list/:id?
+- Lista todos os times cadastrados, ou um time específico caso seja passado o ID como parâmetro
+- Requer um token de autenticação válido para acessar a rota
+- Respostas:
+    - 200: lista de times ou time específico
+    - 400: erro ao listar times existentes
+    - 404: time não encontrado
 
-### /auth/login
+### DELETE /teams/delete/:id
+- Deleta um time específico pelo ID
+- Requer um token de autenticação válido para acessar a rota
+- Respostas:
+    - 200: time removido com sucesso
+    - 400: time não encontrado
+    - 500: erro ao remover o time
 
-- Rota de login
-- A requisicao deve conter os seguintes campos;
-- A falta de qualquer um desses campos resultará em um erro;
-- O token da requisicao será dado caso retorne um sucesso;
-- O token dado deve ser colocado como header para as rotas protegidas;
+### GET /teams/sort
+- Sorteia os times cadastrados em 2 chaves, e gera as partidas correspondentes
+- Requer um token de autenticação válido para acessar a rota
+- Respostas:
+    - 200: lista de partidas geradas
+    - 400: não é possível sortear os times, é necessário ter 8 times cadastrados.
+    - 500: erro ao sortear os times.
 
-```json
-// request
-{
-  "email": "teste@gmail.com",
-  "password": "1234"
-}
-
-// response
-{
-  "sucess": "true",
-  "token": "dasjdsadlsaçdjsadkasçass74wq542"
-}
-```
+### PATCH /teams/edit/:id
+- Edita um time específico pelo ID
+- Requer um token de autenticação válido para acessar a rota
+- Body da requisição deve conter:
+    - name: string
+    - shieldImage: string
+    - city: string
+    - coachName: string
+    - website: string
+- Respostas:
+    - 200: time editado com sucesso
+    - 400: time não encontrado
+    - 500: erro ao editar o time
+    
+    
+ 
 
 ## Questoes
 Crie uma API(apenas backend) de organização de um pequeno campeonato de futebol. Use Node e Express como tecnologias. Atenda aos seguintes requisitos:
