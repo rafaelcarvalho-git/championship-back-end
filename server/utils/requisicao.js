@@ -1,12 +1,15 @@
 const axios = require("axios")
 
-exports.requisicao = function (method, url, data) {
+exports.requisicao = function (requisicao) {
 
   return axios({
-    method: method,
-    url: url,
-    data: data,
+    method: requisicao.method,
+    url: requisicao.url,
+    data: requisicao.data,
     validateStatus: false,
+    Headers: {
+      Authorization: `Bearer ${requisicao.token}`
+    }
   })
 
 }
