@@ -1,96 +1,89 @@
+require("../routes/userRoutes")
 const { generate } = require("../utils/returnData")
 const { requisicao } = require("../utils/requisicao")
+const { describe, test, expect } = require("@jest/globals")
 
 let user = {
   email: "",
   password: ""
 }
 const url = "http://localhost:3000"
-let token = ""
 
-// eslint-disable-next-line no-undef
-test("should sign in new user", async () => {
-
-  const data = {
-    name: generate(),
-    email: generate() + "@gmail.com",
-    password: generate()
-  }
-
-  user.email = data.email
-  user.password = data.password
-
-  const request = await requisicao({
-    method: "POST", 
-    url: url+"/auth/register", 
-    data: data
+describe("tests of sucess", () => {
+  
+  test("should sign in new user", async () => {
+  
+    const data = {
+      name: generate(),
+      email: generate() + "@gmail.com",
+      password: generate()
+    }
+  
+    user.email = data.email
+    user.password = data.password
+  
+    const request = await requisicao({
+      method: "POST", 
+      url: url+"/auth/register", 
+      data: data
+    })
+  
+    expect(request.status).toBe(201)
   })
 
-  // eslint-disable-next-line no-undef
-  expect(request.status).toBe(201)
+  test("should log in", async () => {
+  
+    const data = {
+      email: user.email,
+      password: user.password
+    }
+  
+    const request = await requisicao({ 
+      method: "POST", 
+      url: url+"/auth/login", 
+      data: data
+    })
+    
+    expect(request.status).toBe(200)
+  
+  })
 })
 
-// eslint-disable-next-line no-undef
-test("should not sign in new user", async () => {
+describe("tests of failure", () => {
+
+  test("should not sign in new user", async () => {
   // test must fail because the data is incomplete
+    
+    const data = {
+      name: generate(),
+      email: generate() + "@gmail.com",
+    }
 
-  const data = {
-    name: generate(),
-    email: generate() + "@gmail.com",
-  }
+    const request = await requisicao({
+      method: "POST", 
+      url:url+"/auth/register", 
+      data: data
+    })
 
-  const request = await requisicao({
-    method: "POST", 
-    url:url+"/auth/register", 
-    data: data
+    expect(request.status).toBe(400)
   })
 
-  // eslint-disable-next-line no-undef
-  expect(request.status).toBe(400)
+  test("should not log in", async () => {
+  // test must fail because user is not signed    
   
-})
+    const data = {
+      email: generate() + "gmail.com",
+      password: generate()
+    }
 
-// eslint-disable-next-line no-undef
-test("should log in", async () => {
+    const request = await requisicao({ 
+      method: "POST", 
+      url: url+"/auth/login", 
+      data: data
+    })
   
-  const data = {
-    email: user.email,
-    password: user.password
-  }
-
-  const request = await requisicao({ 
-    method: "POST", 
-    url: url+"/auth/login", 
-    data: data
-  })
+    expect(request.status).toBe(400)
   
-  // eslint-disable-next-line no-undef
-  expect(request.status).toBe(200)
-  token = request.data.token
-
-})
-
-// eslint-disable-next-line no-undef
-test("should not log in", async () => {
-
-  // test must fail because user is not signed
-
-  const data = {
-    email: generate() + "gmail.com",
-    password: generate()
-  }
-
-  const request = await requisicao({ 
-    method: "POST", 
-    url: url+"/auth/login", 
-    data: data
   })
 
-  // eslint-disable-next-line no-undef
-  expect(request.status).toBe(400)
-
 })
-
-exports.returnsToken = function() {
-  return token
-}
