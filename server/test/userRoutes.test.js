@@ -4,6 +4,7 @@ const { requisicao } = require("../utils/requisicao")
 const { describe, test, expect } = require("@jest/globals")
 
 let user = {
+  name: "",
   email: "",
   password: ""
 }
@@ -19,6 +20,7 @@ describe("tests of sucess", () => {
       password: generate()
     }
   
+    user.name = data.name
     user.email = data.email
     user.password = data.password
   
@@ -66,6 +68,23 @@ describe("tests of failure", () => {
     })
 
     expect(request.status).toBe(400)
+  })
+
+  test.only("should not sign in new user", async () => {
+  // test must fail because user was already signed in
+
+    const request = await requisicao({
+      method: "POST",
+      url: url+"/auth/register",
+      data: {
+        name: user.name,
+        email: user.email,
+        password: user.password
+      }
+    })
+    
+    expect(request.status).toBe(400)
+
   })
 
   test("should not log in", async () => {

@@ -43,7 +43,6 @@ router.post("/auth/register", async(req, res) => {
       message: "Usuario criado com sucesso"
     })
   } catch(error) {
-    console.log(error)
     res.status(400).json({
       message: "Erro ocorreu durante a criacao do usuario"
     })
@@ -101,13 +100,11 @@ router.post("/auth/login", async (req, res) => {
     })
 
   } catch (error) {
-    console.log(error)
     res.status(400).json({
       message: "Erro ocorreu durante autenticacao"
     })
   }
 
 })
-
 
 module.exports = router
