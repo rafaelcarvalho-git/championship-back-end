@@ -7,8 +7,8 @@ exports.requisicao = function (requisicao) {
     url: requisicao.url,
     data: requisicao.data,
     validateStatus: false,
-    Headers: {
-      Authorization: `Bearer ${requisicao.token}`
+    headers: {
+      Authorization: "Bearer "+requisicao.token
     }
   })
 
