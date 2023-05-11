@@ -21,6 +21,15 @@ npm install
 npm start
 ```
 
+# Responsabilidades de cada pasta:
+- server: contem os arquivos de como o servidor funciona;
+    - data: contem os comandos que ocorrerão no banco;
+    - middleware: contem funcoes e verificacoes que ocorrem entre os chamados das rotas;
+    - models: pasta que contem as estruturas do banco de dados;
+    - routes: contem as rotas do servidor;
+    - test: contem os testes das rotas;
+    - services: contem a logica e serve para conectar ao banco de dados;
+
 ## Rotas Possíveis
 
 ### POST /auth/register
