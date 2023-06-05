@@ -3,6 +3,14 @@ const express = require("express")
 const mongoose = require("mongoose")
 
 const app = express()
+const cors = require('cors')
+app.use(cors())
+
+app.use(cors({
+  origin: 'http://127.0.0.1:5500',
+  methods: ['GET'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use(express.json())
 app.use(require("./routes/userRoutes"))
