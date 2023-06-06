@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Games</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/53/53283.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+
+<script>
+
+
+    const teams = [
+        {
+            "PARTIDA": 1,
+            "timeA": {
+                "_id": "647dfdae2b2cb1b3b79d0f57",
+                "name": "7 Time",
+                "shieldImage": "https://example.com/shield.png",
+                "city": "7Minha Cidade",
+                "coachName": "João da Silva",
+                "website": "https://example.com",
+                "__v": 0
+            },
+            "timeB": {
+                "_id": "6451bdebb1737ea7fa27f7ec",
+                "name": "Corinthians",
+                "shieldImage": "https://a.espncdn.com/i/teamlogos/soccer/500/874.png",
+                "city": "São Paulo",
+                "coachName": "Vanderlei Luxemburgo",
+                "website": "https://www.corinthians.com.br/",
+                "__v": 0
+            }
+        },
+        {
+            "PARTIDA": 2,
+            "timeA": {
+                "_id": "6451a996a27bd51e93e60fee",
+                "name": "Flamengo",
+                "shieldImage": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/soccer/500/819.png&h=200&w=200",
+                "city": "Rio de Janeiro",
+                "coachName": "Jorge Sampaoli",
+                "website": "https://www.flamengo.com.br/",
+                "__v": 0
+            },
+            "timeB": {
+                "_id": "647dfdb22b2cb1b3b79d0f5b",
+                "name": "8 Time",
+                "shieldImage": "https://example.com/shield.png",
+                "city": "8Minha Cidade",
+                "coachName": "João da Silva",
+                "website": "https://example.com",
+                "__v": 0
+            }
+        },
+        {
+            "PARTIDA": 3,
+            "timeA": {
+                "_id": "6451b37d9ae4acf84e298cc9",
+                "name": "Sao Paulo",
+                "shieldImage": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/soccer/500/2026.png&h=200&w=200",
+                "city": "Sao Paulo",
+                "coachName": "Rogerio Ceni",
+                "website": "http://www.saopaulofc.net/",
+                "__v": 0
+            },
+            "timeB": {
+                "_id": "647dfdaa2b2cb1b3b79d0f53",
+                "name": "6 Time",
+                "shieldImage": "https://example.com/shield.png",
+                "city": "6Minha Cidade",
+                "coachName": "João da Silva",
+                "website": "https://example.com",
+                "__v": 0
+            }
+        },
+        {
+            "PARTIDA": 4,
+            "timeA": {
+                "_id": "647dfda42b2cb1b3b79d0f4f",
+                "name": "5 Time",
+                "shieldImage": "https://example.com/shield.png",
+                "city": "5Minha Cidade",
+                "coachName": "João da Silva",
+                "website": "https://example.com",
+                "__v": 0
+            },
+            "timeB": {
+                "_id": "6451dd40b980bf0b8ba91c0c",
+                "name": "Vasco",
+                "shieldImage": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/soccer/500/3454.png",
+                "city": "Rio de Janeiro",
+                "coachName": "Maurício Barbieri",
+                "website": "https://vasco.com.br/",
+                "__v": 0
+            }
+        }
+    ]
+
+
+    function sort() {
+        const container = document.querySelector('.teams');
+        let html = '';
+
+        if (true /*conferir msg de erro*/) {
+            for (let i = 0; i < teams.length; i++) {
+                const partida = teams[i].PARTIDA;
+                const timeA = teams[i].timeA;
+                const timeB = teams[i].timeB;
+
+                html += `                 
+                <div class="col-12 col-md-6 my-2">
+                    <h4>Partida ${partida}</h4>
+                    <div class="d-flex flex-wrap gap-4 align-items-center my-5 justify-content-center">
+                        <div class="d-flex align-items-center">
+                            <p class="lead me-3">${timeA.name}</p>
+                            <img src="${timeA.shieldImage}" width="64px" alt="">
+                        </div>
+                        <b>X</b>
+                        <div class="d-flex align-items-center">
+                            <img src="${timeB.shieldImage}" width="64px" alt="">
+                            <p class="lead ms-3">${timeB.name}</p>
+                        </div>
+                    </div>
+                </div>               
+                `;
+            }
+
+        } else {
+            html += `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Erro! Confira se há 8 times cadastrados.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            `
+        }
+        container.innerHTML = html;
+    }
+</script>
+
+<body>
+
+    <nav class="navbar bg-primary">
+        <div class="container container-fluid">
+            <a class="navbar-brand text-white" href="#">Projeto de Sistemas Web II</a>
+            <a class="navbar-brand text-white" href="#">Atividade III</a>
+        </div>
+    </nav>
+
+    <div class="px-4 py-5 my-5 text-center ">
+        <h1 class="display-5 fw-bold text-body-emphasis">Sortear Times</h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">Clique no botão abaixo para sortear os times e criar as chaves para o campeonato.</p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <button type="button" class="btn btn-primary btn-lg px-4 gap-3" onclick="sort()">Sortear</button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div class="container">
+            <div class="row teams">
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="https://github.com/MiihLeite" class="nav-link px-2 text-muted">Michele
+                    Araújo</a></li>
+            <li class="nav-item"><a href="https://github.com/rafaelcarvalho-git" class="nav-link px-2 text-muted">Rafael
+                    Carvalho</a></li>
+            <li class="nav-item"><a href="https://github.com/TheSamuelVitor" class="nav-link px-2 text-muted">Samuel
+                    Vitor</a></li>
+        </ul>
+        <p class="text-center text-muted"><a class="text-muted"
+                href="https://github.com/rafaelcarvalho-git/championship-back-end">https://github.com/rafaelcarvalho-git/championship-back-end</a>
+        </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
