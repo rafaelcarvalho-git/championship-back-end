@@ -4,7 +4,7 @@ const mongoose = require("mongoose")
 
 const app = express()
 
-app.use(require("./middleware/cors"))
+app.use(require("./middleware/cors").default)
 app.use(express.json())
 app.use(require("./routes/userRoutes"))
 app.use(require("./routes/teamRoute"))
