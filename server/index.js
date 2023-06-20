@@ -7,7 +7,7 @@ const app = express()
 app.use(cors())
 
 app.use(cors({
-  origin: "https://web2-atividade3-one.vercel.app/",
+  origin: "*",
   methods: ["GET"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }))
