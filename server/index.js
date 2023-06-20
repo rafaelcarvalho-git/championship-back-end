@@ -1,4 +1,5 @@
 require("dotenv").config()
+const cors = require("cors")
 const express = require("express")
 const mongoose = require("mongoose")
 
@@ -8,6 +9,14 @@ app.use(express.json())
 app.use(require("./routes/userRoutes"))
 app.use(require("./routes/teamRoute"))
 app.use(require("./routes/playerRoute"))
+
+app.use(
+  cors({
+    origin:"https://web2-atividade3.vercel.app",   
+    methods: "GET, POST, PUT, PATCH, DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+  })
+)
 
 // credenciais
 const dbUser = process.env.DB_USER
